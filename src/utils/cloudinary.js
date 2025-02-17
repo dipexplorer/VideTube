@@ -23,23 +23,27 @@ const uploadOnCloudinary = async (localFilePath) => {
 
         // console.log("CLOUDINARY RESPOND AFTER UPLOADING", respond);
 
-        // fs.unlink(localFilePath);
         // Delete file after upload
-        fs.unlink(localFilePath, (err) => {
-            if (err) {
-                console.error("Error deleting local file:", err);
-            } else {
-                console.log("Local file deleted successfully");
-            }
-        });
+        // ✅ Delete file using fs.promises.unlink()
+        await fs.promises.unlink(localFilePath);
+
+        // ✅ Ensure the local file is deleted even if upload fails
+        console.log("Local file deleted successfully");
+
         return respond;
     } catch (err) {
         console.error("Error occurred while uploading to cloudinary", err);
         // Ensure the local file is deleted even if upload fails
-        fs.unlink(localFilePath, (err) => {
-            if (err)
-                console.error("Error deleting local file after failure:", err);
-        });
+        // Even if upload fails, delete the local file
+        try {
+            await fs.promises.unlink(localFilePath);
+            console.log("Local file deleted after failure");
+        } catch (unlinkErr) {
+            console.error(
+                "Error deleting local file after failure:",
+                unlinkErr
+            );
+        }
         return null;
     }
 };

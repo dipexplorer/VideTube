@@ -19,12 +19,13 @@ const getAllVideos = asyncHandler(async (req, res) => {
         sortType = "asc",
         userId,
     } = req.query;
+    console.log("Query Params:", req.query);
 
     let searchQuery = {};
 
     // Apply search filter if `query` exists
     if (query) {
-        searchQuery.name = {
+        searchQuery.title = {
             $regex: query,
             $options: "i",
         };
@@ -47,7 +48,12 @@ const getAllVideos = asyncHandler(async (req, res) => {
             .skip(skip)
             .limit(parseInt(limit));
 
-        const totalVideos = await Video.countDocuments(filter);
+        if (!videos.length) {
+            throw new apiError(404, "No videos found");
+        }
+
+        const totalVideos =
+            (await Video.countDocuments(searchQuery)) || videos.length;
 
         res.status(200).json(
             new apiResponse(
@@ -59,7 +65,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         );
     } catch (err) {
         console.log("Error while processing search query", err);
-        throw new apiError(500, "Server Error");
+        throw new apiError(500, err.message);
     }
 });
 
@@ -114,6 +120,84 @@ const publishVideo = asyncHandler(async (req, res) => {
     }
 });
 
+const getVideoById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new apiError(400, "Video ID is required");
+    }
+    try {
+        const video = await Video.findById(id);
+        if (!video) {
+            throw new Error("Video not found");
+        }
+        res.status(200).json(
+            new apiResponse(200, video, "Video retrieved successfully")
+        );
+    } catch (err) {
+        console.log("Error retrieving video", err);
+        throw new apiError(500, "Server Error");
+    }
+});
+
+const updateVideo = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new apiError(400, "Video ID is required");
+    }
+    //TODO: update video details like title, description, thumbnail
+    const { title, description } = req.body;
+    const thumbnailLocalPath = req.file?.path;
+
+    if (!title || !description || !thumbnailLocalPath) {
+        throw new apiError(
+            400,
+            "Title, description and thumbnail are required"
+        );
+    }
+    try {
+        const video = await Video.findById(id);
+        if (!video) {
+            throw new Error("Video not found");
+        }
+
+        const thumbnailUrl = video.thumbnail;
+
+        if (thumbnailUrl) {
+            const thumbnailPublicId = thumbnailUrl
+                .split("/")
+                .pop()
+                .split(".")[0];
+            await deleteFromCloudinary(thumbnailPublicId);
+        }
+
+        const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+        if (!thumbnail?.secure_url) {
+            throw new Error("Failed to update thumbnail on cloudinary");
+        }
+
+        video.title = title || video.title;
+        video.description = description || video.description;
+        video.thumbnail = thumbnail.secure_url;
+
+        await video.save();
+
+        res.status(200).json(
+            new apiResponse(200, video, "Video updated successfully")
+        );
+    } catch (err) {
+        console.log("Error updating video", err);
+        throw new apiError(500, "Server Error");
+    }
+});
+
+const deleteVideo = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    //TODO: delete video
+});
+
 module.exports = {
+    getAllVideos,
     publishVideo,
+    getVideoById,
+    updateVideo,
 };

@@ -15,7 +15,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     console.log("Extracted Token:", token); // Added for debugging
 
     if (!token) {
-        throw new apiError(401, "Access denied. No token provided.");
+        throw new apiError(401, "Access denied. You must be logged");
     }
 
     try {

@@ -1,8 +1,14 @@
 const express = require("express");
-const { publishVideo } = require("../controllers/video.controllers.js");
+const {
+    getAllVideos,
+    publishVideo,
+    getVideoById,
+    updateVideo,
+} = require("../controllers/video.controllers.js");
 
 const upload = require("../middlewares/multer.middleware.js");
 const verifyJWT = require("../middlewares/auth.middleware.js");
+const isVideoOwner = require("../middlewares/vdoOwner.middleware.js");
 
 const router = express.Router();
 
@@ -15,6 +21,16 @@ router.use((req, res, next) => {
     console.log("Incoming Request - Method:", req.method, " Path:", req.path);
     next();
 });
+// search for video
+router.route("/search").get(getAllVideos);
+
+// ✅ Video Route (with file upload)
+router.route("/:id").get(getVideoById);
+
+// Update video
+router
+    .route("/:id")
+    .put(verifyJWT, isVideoOwner, upload.single("thumbnail"), updateVideo);
 
 // ✅ Video Route (with file upload)
 router.route("/upload").post(

@@ -142,7 +142,7 @@ const loginUser = asyncHandler(async (req, res) => {
     //validate password
     const isMatch = await user.isPasswordCorrect(password);
     if (!isMatch) {
-        throw new apiError(401, "invalid credentials");
+        throw new apiError(401, "password invalid");
     }
 
     //generate tokens
