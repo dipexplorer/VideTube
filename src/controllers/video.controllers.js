@@ -160,10 +160,10 @@ const updateVideo = asyncHandler(async (req, res) => {
             throw new Error("Video not found");
         }
 
-        const thumbnailUrl = video.thumbnail;
+        const thumbnailPublicId = video.thumbnail;
 
-        if (thumbnailUrl) {
-            const thumbnailPublicId = thumbnailUrl
+        if (thumbnailPublicId) {
+            const thumbnailPublicId = thumbnailPublicId
                 .split("/")
                 .pop()
                 .split(".")[0];
@@ -191,8 +191,70 @@ const updateVideo = asyncHandler(async (req, res) => {
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
-    const { videoId } = req.params;
-    //TODO: delete video
+    const { id } = req.params;
+    if (!id) {
+        throw new apiError(400, "Video ID is required");
+    }
+    try {
+        const video = await Video.findById(id);
+        if (!video) {
+            throw new Error("Video not found");
+        }
+
+        // 🔹 Step 1: Delete thumbnail from Cloudinary
+        if (video.thumbnail) {
+            const thumbnailPublicId = video.thumbnail
+                .split("/")
+                .pop()
+                .split(".")[0];
+            await deleteFromCloudinary(thumbnailPublicId);
+        }
+
+        // �� Step 2: Delete video from Cloudinary
+        if (video.videoFile) {
+            const videoPublicId = video.videoFile
+                .split("/")
+                .pop()
+                .split(".")[0];
+            await deleteFromCloudinary(videoPublicId);
+        }
+
+        // 🔹 Step 3: Delete video from database
+        await Video.findByIdAndDelete(id);
+
+        res.status(200).json(
+            new apiResponse(200, null, "Video deleted successfully")
+        );
+    } catch (err) {
+        console.log("Error retrieving video", err);
+        throw new apiError(500, "Server error while deleting video");
+    }
+});
+
+const togglePublishStatus = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new apiError(400, "Video ID is required");
+    }
+    try {
+        const video = await Video.findById(id);
+        if (!video) {
+            throw new Error("Video not found");
+        }
+
+        video.isPublished = !video.isPublished;
+        await video.save();
+        res.status(200).json(
+            new apiResponse(
+                200,
+                video,
+                `Video status toggled to ${video.isPublished ? "Public" : "Private"}`
+            )
+        );
+    } catch (err) {
+        console.log("Error retrieving video", err);
+        throw new apiError(500, "Server error while toggling publish status");
+    }
 });
 
 module.exports = {
@@ -200,4 +262,6 @@ module.exports = {
     publishVideo,
     getVideoById,
     updateVideo,
+    deleteVideo,
+    togglePublishStatus,
 };

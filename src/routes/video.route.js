@@ -4,6 +4,8 @@ const {
     publishVideo,
     getVideoById,
     updateVideo,
+    deleteVideo,
+    togglePublishStatus,
 } = require("../controllers/video.controllers.js");
 
 const upload = require("../middlewares/multer.middleware.js");
@@ -31,6 +33,13 @@ router.route("/:id").get(getVideoById);
 router
     .route("/:id")
     .put(verifyJWT, isVideoOwner, upload.single("thumbnail"), updateVideo);
+
+// Delete video
+router.route("/:id").delete(verifyJWT, isVideoOwner, deleteVideo);
+
+// Toggle Publish Status
+
+router.route("/:id/publish").put(verifyJWT, isVideoOwner, togglePublishStatus);
 
 // ✅ Video Route (with file upload)
 router.route("/upload").post(
