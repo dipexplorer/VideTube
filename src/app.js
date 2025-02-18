@@ -28,11 +28,13 @@ app.use(cookieParser());
 const healthCheckRouter = require("./routes/healthCheck_route.js");
 const userRouter = require("./routes/user.route.js");
 const videoRouter = require("./routes/video.route.js");
+const subscriptionRouter = require("./routes/subscription.route.js");
 
 // ✅ API Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/video", videoRouter);
+app.use("/api/v1/subscription", subscriptionRouter);
 
 // ✅ Global Error Handler (Catches All Errors)
 app.use((err, req, res, next) => {
