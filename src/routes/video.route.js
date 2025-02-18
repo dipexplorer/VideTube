@@ -8,6 +8,11 @@ const {
     togglePublishStatus,
 } = require("../controllers/video.controllers.js");
 
+const {
+    getVideoComments,
+    addComment,
+} = require("../controllers/comment.controller.js");
+
 const upload = require("../middlewares/multer.middleware.js");
 const verifyJWT = require("../middlewares/auth.middleware.js");
 const isVideoOwner = require("../middlewares/vdoOwner.middleware.js");
@@ -38,7 +43,6 @@ router
 router.route("/:id").delete(verifyJWT, isVideoOwner, deleteVideo);
 
 // Toggle Publish Status
-
 router.route("/:id/publish").put(verifyJWT, isVideoOwner, togglePublishStatus);
 
 // ✅ Video Route (with file upload)
@@ -50,5 +54,11 @@ router.route("/upload").post(
     ]),
     publishVideo
 );
+
+// ✅ Get all comments of a video
+router.get("/:videoId/comments", getVideoComments);
+
+// ✅ Add a comment
+router.post("/:videoId/comment", verifyJWT, addComment);
 
 module.exports = router;
