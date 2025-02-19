@@ -30,6 +30,7 @@ const userRouter = require("./routes/user.route.js");
 const videoRouter = require("./routes/video.route.js");
 const subscriptionRouter = require("./routes/subscription.route.js");
 const commentRouter = require("./routes/comment.routes.js"); // ✅ Import comment routes
+const likeRouter = require("./routes/like.routes.js"); // ✅ Import like routes
 
 // ✅ API Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
@@ -37,6 +38,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/subscription", subscriptionRouter);
 app.use("/api/v1/comment", commentRouter); // ✅ Mount comment routes
+app.use("/api/v1/like", likeRouter);
 
 // ✅ Global Error Handler (Catches All Errors)
 app.use((err, req, res, next) => {
