@@ -15,6 +15,11 @@ const getVideoComments = asyncHandler(async (req, res) => {
         if (!video) {
             throw new apiError(404, "Video not found");
         }
+
+        // 🔢 Total comments count
+        const totalComments = await Comment.countDocuments({ video: videoId });
+
+        // 📝 Fetch paginated comments
         const comments = await Comment.find({ video: videoId })
             .populate("owner", "username avatar")
             .sort({ createdAt: -1 }) // ✅ Latest comments pehle show karna
@@ -29,6 +34,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 new apiResponse(
                     200,
                     comments,
+                    `Retrieved ${comments.length} of ${totalComments} comments for video ${videoId}`,
                     "comments retrieved successfully"
                 )
             );

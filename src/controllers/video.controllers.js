@@ -10,6 +10,54 @@ const {
     deleteFromCloudinary,
 } = require("../utils/cloudinary.js");
 
+const increaseViewCount = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const userId = req.user?._id; // ✅ Logged-in user ID
+    const userIP = req.ip; // ✅ Guest user IP address
+    console.log("USER IP WHEN NOT LOGGEDIN", userIP);
+
+    try {
+        const video = await Video.findById(id);
+        if (!video) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Video not found." });
+        }
+
+        // ✅ 1. Check if logged-in user has already watched
+        if (userId && video.viewers.includes(userId)) {
+            return next(); // Already viewed, move to next middleware
+        }
+
+        // ✅ 2. Check if guest user (IP) already viewed (MongoDB)
+        const alreadyViewed = video.guestViewers.some(
+            (viewer) => viewer.ip === userIP
+        );
+        if (alreadyViewed) {
+            return next(); // Already viewed, move to next middleware
+        }
+
+        // ✅ 3. Increase view count & store viewer details
+        video.views += 1;
+        if (userId) {
+            video.viewers.push(userId); // Store user ID (if logged in)
+        } else {
+            video.guestViewers.push({ ip: userIP, viewedAt: new Date() }); // Store guest IP
+        }
+
+        await video.save();
+        next(); // Move to next middleware
+    } catch (err) {
+        console.error("Error updating view count:", err);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
+
+module.exports = increaseViewCount;
+
 const getAllVideos = asyncHandler(async (req, res) => {
     const {
         page = 1,
@@ -264,4 +312,5 @@ module.exports = {
     updateVideo,
     deleteVideo,
     togglePublishStatus,
+    increaseViewCount,
 };

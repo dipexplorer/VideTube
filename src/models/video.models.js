@@ -23,6 +23,10 @@ const videSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        likesCount: {
+            type: Number,
+            default: 0,
+        },
         duration: {
             type: String,
             // required: true,
@@ -36,6 +40,13 @@ const videSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+        viewers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // ✅ Unique viewers
+        guestViewers: [
+            {
+                ip: String,
+                viewedAt: { type: Date, default: Date.now },
+            },
+        ],
     },
     {
         timestamps: true,

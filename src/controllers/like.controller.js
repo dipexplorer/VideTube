@@ -14,12 +14,18 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     //TODO: toggle like on video
     const userId = req.user._id;
     try {
+        const video = await Video.findById(videoId);
+        if (!video) {
+            throw new apiError(404, "Video not found.");
+        }
+
         const existUserLike = await Like.findOne({
             video: videoId,
             likeBy: userId,
         });
         if (existUserLike) {
             await Like.findByIdAndDelete(existUserLike._id);
+            video.likesCount -= 1; // ✅ Decrease like count
             return res
                 .status(200)
                 .json(new apiResponse(200, null, "Like removed successfully."));
@@ -28,6 +34,9 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
             video: videoId,
             likeBy: userId,
         });
+
+        video.likesCount += 1; // ✅ Increase like count
+        await video.save(); // ✅ Save the updated count
 
         return res.status(200).json(new apiResponse(200, like, "like video"));
     } catch (err) {
@@ -40,6 +49,12 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
     //TODO: toggle like on comment
     const userId = req.user._id;
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+        throw new apiError(404, "Comment not found.");
+    }
+
     try {
         const existUserLike = await Like.findOne({
             comment: commentId,
@@ -47,6 +62,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
         });
         if (existUserLike) {
             await Like.findByIdAndDelete(existUserLike._id);
+            comment.likes -= 1; // ✅ Decrease like count
             return res
                 .status(200)
                 .json(new apiResponse(200, null, "Like removed successfully."));
@@ -55,6 +71,10 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
             comment: commentId,
             likeBy: userId,
         });
+
+        comment.likes += 1; // ✅ Increase like count
+        await comment.save(); // ✅ Save the updated count
+
         return res.status(200).json(new apiResponse(200, like, "like comment"));
     } catch (err) {
         console.error("Error toggling like on comment:", err);
@@ -66,6 +86,10 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
     //TODO: toggle like on tweet
     const userId = req.user._id;
+    const tweet = await Tweet.findById(tweetId);
+    if (!tweet) {
+        throw new apiError(404, "Tweet not found.");
+    }
     try {
         const existUserLike = await Like.findOne({
             tweet: tweetId,
@@ -73,6 +97,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         });
         if (existUserLike) {
             await Like.findByIdAndDelete(existUserLike._id);
+            tweet.likes -= 1; // ✅ Decrease like count
             return res
                 .status(200)
                 .json(new apiResponse(200, null, "Like removed successfully."));
@@ -81,6 +106,10 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
             tweet: tweetId,
             likeBy: userId,
         });
+
+        tweet.likes += 1; // ✅ Increase like count
+        await tweet.save(); // ✅ Save the updated count
+
         return res.status(200).json(new apiResponse(200, like, "like tweet"));
     } catch (err) {
         console.error("Error toggling like on tweet:", err);

@@ -6,6 +6,7 @@ const {
     updateVideo,
     deleteVideo,
     togglePublishStatus,
+    increaseViewCount,
 } = require("../controllers/video.controllers.js");
 
 const {
@@ -32,7 +33,7 @@ router.use((req, res, next) => {
 router.route("/search").get(getAllVideos);
 
 // ✅ Video Route (with file upload)
-router.route("/:id").get(getVideoById);
+router.route("/:id").get(verifyJWT, increaseViewCount, getVideoById);
 
 // Update video
 router
