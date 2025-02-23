@@ -40,7 +40,9 @@ const videSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        viewers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // ✅ Unique viewers
+        viewers: [
+            { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+        ], // ✅ Unique viewers
         guestViewers: [
             {
                 ip: String,

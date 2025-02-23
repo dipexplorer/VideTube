@@ -56,8 +56,6 @@ const increaseViewCount = asyncHandler(async (req, res, next) => {
     }
 });
 
-module.exports = increaseViewCount;
-
 const getAllVideos = asyncHandler(async (req, res) => {
     const {
         page = 1,
