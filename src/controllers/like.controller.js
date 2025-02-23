@@ -8,6 +8,7 @@ const User = require("../models/user.models.js");
 const Video = require("../models/video.models.js");
 const Comment = require("../models/comment.models.js");
 const Like = require("../models/like.models.js");
+const Tweet = require("../models/tweet.models.js");
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const { videoId } = req.params;

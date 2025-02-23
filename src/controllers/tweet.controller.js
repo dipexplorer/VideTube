@@ -98,9 +98,9 @@ const deleteTweet = asyncHandler(async (req, res) => {
         if (tweet.owner.toString() !== userId.toString()) {
             throw new apiError(403, "You are not authorized to delete this tweet.");
         }
-        await tweet.remove();
+        await Tweet.findByIdAndDelete(tweetId);
         return res.status(200).json(
-            new apiResponse("200", tweet, "Tweet deleted successfully")
+            new apiResponse("200", [], "Tweet deleted successfully")
         )
     } catch (err) {
         console.log("ERROR WHILE DELETING TWEET:", err);
