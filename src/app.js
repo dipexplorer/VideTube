@@ -33,6 +33,7 @@ const commentRouter = require("./routes/comment.routes.js"); // ✅ Import comme
 const likeRouter = require("./routes/like.routes.js"); // ✅ Import like routes
 const tweetRouter = require("./routes/tweet.routes.js");
 const playlistRouter = require("./routes/playlist.route.js")
+const dashboardRouter = require("./routes/dashboard.routes.js");
 
 // ✅ API Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
@@ -43,6 +44,7 @@ app.use("/api/v1/comment", commentRouter); // ✅ Mount comment routes
 app.use("/api/v1/like", likeRouter);
 app.use("/api/v1/tweet", tweetRouter);
 app.use("/api/v1/playlist", playlistRouter); // ✅ Mount playlist routes
+app.use("/api/v1/dashboard", dashboardRouter);
 
 
 // ✅ Global Error Handler (Catches All Errors)
