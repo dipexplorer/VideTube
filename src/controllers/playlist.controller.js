@@ -109,7 +109,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
         if (!playlist.videos.includes(videoId)) {
             throw new apiError(400, "Video not in playlist.");
         }
-        playlist.videos = playlist.videos.filter((id) => id !== videoId);
+        playlist.videos = playlist.videos.filter((id) => id.toString() !== videoId.toString());
         await playlist.save();
         res.status(200).json(
             new apiResponse(200, playlist, "Video removed from playlist successfully")

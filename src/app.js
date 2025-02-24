@@ -32,6 +32,7 @@ const subscriptionRouter = require("./routes/subscription.route.js");
 const commentRouter = require("./routes/comment.routes.js"); // ✅ Import comment routes
 const likeRouter = require("./routes/like.routes.js"); // ✅ Import like routes
 const tweetRouter = require("./routes/tweet.routes.js");
+const playlistRouter = require("./routes/playlist.route.js")
 
 // ✅ API Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
@@ -41,6 +42,8 @@ app.use("/api/v1/subscription", subscriptionRouter);
 app.use("/api/v1/comment", commentRouter); // ✅ Mount comment routes
 app.use("/api/v1/like", likeRouter);
 app.use("/api/v1/tweet", tweetRouter);
+app.use("/api/v1/playlist", playlistRouter); // ✅ Mount playlist routes
+
 
 // ✅ Global Error Handler (Catches All Errors)
 app.use((err, req, res, next) => {
