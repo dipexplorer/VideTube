@@ -22,7 +22,12 @@ const getChannelStats = asyncHandler(async (req, res) => {
     // Aggregate total views on all videos uploaded by the user
     const totalViews = await Video.aggregate([
         { $match: { owner: channelId } },
-        { $group: { _id: null, total: { $sum: "$views" } } }
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$views" }
+            }
+        }
     ]);
 
     // Aggregate total likes on all videos uploaded by the user
