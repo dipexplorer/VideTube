@@ -1,0 +1,52 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VideTube backend flow diagram">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 40px Inter, Arial, sans-serif; fill: #f8fafc; }
+      .subtitle { font: 500 22px Inter, Arial, sans-serif; fill: #cbd5e1; }
+      .box { fill: #111827; stroke: #60a5fa; stroke-width: 2; rx: 16; }
+      .label { font: 600 22px Inter, Arial, sans-serif; fill: #e2e8f0; }
+      .small { font: 400 16px Inter, Arial, sans-serif; fill: #94a3b8; }
+      .arrow { stroke: #38bdf8; stroke-width: 3; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#bg)"/>
+
+  <text x="60" y="80" class="title">VideTube Backend Snapshot</text>
+  <text x="60" y="120" class="subtitle">Express + MongoDB + Cloudinary + JWT</text>
+
+  <rect x="70" y="190" width="270" height="120" class="box"/>
+  <text x="95" y="245" class="label">Client Apps</text>
+  <text x="95" y="275" class="small">Web / Mobile / Postman</text>
+
+  <rect x="450" y="150" width="320" height="200" class="box"/>
+  <text x="485" y="220" class="label">Express API</text>
+  <text x="485" y="250" class="small">/api/v1/user, /video, /playlist</text>
+  <text x="485" y="280" class="small">Auth, validation, controllers</text>
+
+  <rect x="900" y="110" width="240" height="120" class="box"/>
+  <text x="935" y="170" class="label">MongoDB</text>
+  <text x="935" y="198" class="small">Users, Videos, Likes...</text>
+
+  <rect x="900" y="270" width="240" height="120" class="box"/>
+  <text x="935" y="330" class="label">Cloudinary</text>
+  <text x="935" y="358" class="small">Video + image assets</text>
+
+  <rect x="450" y="430" width="320" height="180" class="box"/>
+  <text x="485" y="490" class="label">Security Layer</text>
+  <text x="485" y="520" class="small">JWT access/refresh tokens</text>
+  <text x="485" y="548" class="small">HTTP-only cookies</text>
+  <text x="485" y="576" class="small">Protected routes middleware</text>
+
+  <line x1="340" y1="250" x2="450" y2="250" class="arrow"/>
+  <line x1="770" y1="220" x2="900" y2="170" class="arrow"/>
+  <line x1="770" y1="280" x2="900" y2="330" class="arrow"/>
+  <line x1="610" y1="350" x2="610" y2="430" class="arrow"/>
+</svg>
